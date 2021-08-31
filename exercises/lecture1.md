@@ -39,6 +39,8 @@ Safety, bad thing: *interacting with a Harvard man without knowing it*
 
 ## Exercise 4 (H&S 6)
 
+**Answer the following questions**
+
 - Suppose the sequential part of a program accounts for 40% of the program’s 
 execution time on a single processor. Find a limit for the overall speedup that
 can be achieved by running the program on a multiprocessor machine.
@@ -62,3 +64,18 @@ for? Express your answer as a function of n.
 *f(n) = 1 - n / (n + 3)*
 
 ## Exercise 5 (H&S 8)
+
+**Answer the following question**
+
+You have a choice between buying one uniprocessor that executes
+five zillion instructions per second, or a ten-processor multiprocessor where
+each processor executes one zillion instructions per second. Using Amdahl’s Law,
+explain how you would decide which to buy for a particular application.
+
+The speedup for this particular case is calculated with:
+
+s(*p*) = 1 / (5 - 5*p* + *p*/2)
+
+where *p* is the parallel part of the application.
+
+I would choose the multiprocessor when s(*p*) > 1
