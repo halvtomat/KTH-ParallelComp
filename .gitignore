@@ -13,7 +13,6 @@
 *.aux
 *.pdf
 *.data
-*.png
 
 node_modules/
 
