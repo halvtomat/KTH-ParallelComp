@@ -1,3 +1,15 @@
+/**
+ * Dining philosophers problem
+ * This solution works for any amount of philosophers >= 2 (with less than 2 there are never 2 chopsticks --> deadlock)
+ * The philosopher who returns a chopstick will alert the potentially waiting philosopher that the chopstick is up for grabs --> starvation free
+ * Timers (Thread.sleep) are added to make the prints readable in real time and make the simulation a little more interesting.
+ * The last philosopher is a lefty and picks up the right chopstick first, this eliminates a potential deadlock where everyone has their left chopstick
+ * but the right one is occupied.
+ * 
+ * HOW TO RUN:
+ * java Subtask4 <PHILOSOPHER COUNT> 
+ */
+
 package lab1;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -22,7 +34,7 @@ public class Subtask4 implements Runnable {
 	public void run() {
 		while(true) {
 			double thinkTime = ThreadLocalRandom.current().nextDouble(0.5, 4.0);
-			System.out.println(id + " is thinking...");
+			System.out.println(id + " is THINKING...");
 			try {
 				Thread.sleep((long)(thinkTime * 1000));
 			} catch(InterruptedException e) {}
@@ -41,7 +53,7 @@ public class Subtask4 implements Runnable {
 			acquireChopstick(right, id);
 			acquireChopstick(left, id);
 		}
-		System.out.println(id + " is eating...");
+		System.out.println(id + " is EATING...");
 		try {
 			Thread.sleep((long)(eatTime * 1000));
 		} catch(InterruptedException e) {}
@@ -57,14 +69,20 @@ public class Subtask4 implements Runnable {
 				} catch(InterruptedException e) {}
 			}
 			chopsticks[num] = true;
-			System.out.println(id + " acquired chopstick " + num);
+			try {
+				Thread.sleep(500);
+			} catch(InterruptedException e) {}
+			System.out.println(id + " ACQUIRED chopstick " + num);
 		}
 	}
 
 	private static void returnChopstick(int num, int id) {
 		synchronized(lock[num]) {
 			chopsticks[num] = false;
-			System.out.println(id + " returned chopstick " + num);
+			try {
+				Thread.sleep(500);
+			} catch(InterruptedException e) {}
+			System.out.println(id + " RETURNED chopstick " + num);
 			lock[num].notify();
 		}
 	}
