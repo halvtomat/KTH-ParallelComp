@@ -58,13 +58,29 @@ Any value from 10 to 20. Actor1 could read the value, increment it, but before i
 
 ## Exercise 3
 
-It works for 2 or fewer threads.
+Scenario: 2 Threads A and B:
 
-If there are 3 or more threads and at least 2 of them are competing for the lock, then when 
+	A write(x, A)
+	B write(x, B)
+	A read(y, -1)
+	B read(y, -1)
+	A write(y, A)
+	B write(y, B)
+	B read(x, B)
+	B enters critical section
+	A read(x, B)
+	A lock.lock()
+	A enters critical section
 
-	y = -1
-both the threads can access the criticla section simultaneously.
-
+Both threads simultaneusly enter critical section => mutual exclusion fails.
 ## Exercise 4
 
 The doorway section is needed to determine the order in which the threads arrived at the lock.
+
+Alternatives are:
+
+If the threads read from one or several shared variables the order will be lost as sAB == sBA which means that the state where A arrived before B is identical to the state where B arrived before A.
+
+The same is true if instruction is local or to write to different shared variables.
+
+If instead the threads write to the same shared variable, the later of the threads will write over the earlier one, making it impossible to even know the first thread is waiting.
