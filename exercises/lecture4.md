@@ -11,10 +11,10 @@ Reader 3 reads differing values in diagonal and row 0 but can't determine which 
 
 ??? (*Undefined*)
 
-This violates the property that a later read can't read a value that is older than the value read by an earlier read.
+This violates the property that a later read can't read a value that is older than the value read by an earlier read. (4.1.2)
 
 ## Exercise 5
-A simple example is one with a single reader and a single writer but they always overlap. This would be quiscent consistent but would allow reads to take place in any order which isn't allowed by regularity.
+A simple example is one with a single reader and a single writer but they always overlap. Quiescent consistency would only demand that all method calls appear. This would allow reads to take place in any order which isn't allowed by regularity.
 
 ## Exercise 7
-Yes if using regular SRSW registers in the safe MRSW construction that would mean a read would always return either the new or old value, making the MRSW regular.
+Yes if using regular SRSW registers in the safe MRSW construction. A read that does not overlap a write will return the latest written value. If the read overlaps a write it will either return the new value or the old one. This would be considered a regular MRSW register.

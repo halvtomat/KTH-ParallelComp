@@ -5,9 +5,10 @@ import java.util.concurrent.RecursiveAction;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ForkJoin {
-	
-    private static final ForkJoinPool POOL = new ForkJoinPool();
-    private static final int THRESHOLD = 100;
+
+	private static int THREADCOUNT = Runtime.getRuntime().availableProcessors();
+    private static ForkJoinPool POOL = new ForkJoinPool();
+    private static final int THRESHOLD = 1000;
 
     public void sort(int []arr, int low, int high) {
         POOL.invoke(new quicksort(arr, low, high));
@@ -52,6 +53,10 @@ public class ForkJoin {
 			arrLength = Integer.parseInt(args[0]);
 		if(args.length > 1)
 			runs = Integer.parseInt(args[1]);
+        if(args.length > 2)
+			THREADCOUNT = Integer.parseInt(args[2]);
+		POOL = new ForkJoinPool(THREADCOUNT);
+	
 		for(int i = 0; i < runs; i++) 
 			duration += test(arrLength);
 		duration /= runs;

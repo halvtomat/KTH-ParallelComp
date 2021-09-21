@@ -2,18 +2,21 @@ package lab2;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Lambda {
 
-	private static final int threadCount = Runtime.getRuntime().availableProcessors();
+	private static int THREADCOUNT = Runtime.getRuntime().availableProcessors();
+	private static ForkJoinPool POOL;
 
 	private Queue<int []> createIntervals(int []arr) {
 		Queue<int []> sortQueue = new LinkedList<>();
 		int []initialPoint = {0, arr.length - 1};
 		sortQueue.add(initialPoint);
 
-		while(sortQueue.size() < threadCount) {
+		while(sortQueue.size() < THREADCOUNT) {
 			int []point = sortQueue.remove();
 			if(point[1] < point[0])
 				continue;
@@ -28,7 +31,13 @@ public class Lambda {
 
 	public void sort(int []arr, int low, int high) {
 		Queue<int []> intervals = createIntervals(arr);
-		intervals.stream().parallel().forEach(interval -> new Sequential().quicksort(arr, interval[0], interval[1]));
+		try {
+			POOL.submit(() -> 
+				intervals.stream().parallel().forEach(interval -> new Sequential().quicksort(arr, interval[0], interval[1]))
+			).get();
+		} catch(InterruptedException | ExecutionException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private static long test(int arrLength) {
@@ -49,6 +58,9 @@ public class Lambda {
 			arrLength = Integer.parseInt(args[0]);
 		if(args.length > 1)
 			runs = Integer.parseInt(args[1]);
+		if(args.length > 2)
+			THREADCOUNT = Integer.parseInt(args[2]);
+		POOL = new ForkJoinPool(THREADCOUNT);
 		for(int i = 0; i < runs; i++) 
 			duration += test(arrLength);
 		duration /= runs;

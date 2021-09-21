@@ -9,15 +9,15 @@ import java.util.concurrent.TimeUnit;
 
 public class Executor {
 
-	private static final int threadCount = Runtime.getRuntime().availableProcessors();
-	private final ExecutorService service = Executors.newFixedThreadPool(threadCount);
+	private static int THREADCOUNT = Runtime.getRuntime().availableProcessors();
+	private static ExecutorService SERVICE; 
 
 	private void createThreads(int []arr) {
 		Queue<int []> sortQueue = new LinkedList<>();
 		int []initialPoint = {0, arr.length - 1};
 		sortQueue.add(initialPoint);
 
-		while(sortQueue.size() < threadCount) {
+		while(sortQueue.size() < THREADCOUNT) {
 			int []point = sortQueue.remove();
 			if(point[1] < point[0])
 				continue;
@@ -27,17 +27,17 @@ public class Executor {
 			sortQueue.add(newPoint1);
 			sortQueue.add(newPoint2);
 		}
-		for(int i = 0; i < threadCount; i++) {
+		for(int i = 0; i < THREADCOUNT; i++) {
 			int []point = sortQueue.remove();
-			service.execute(new quicksort(arr, point[0], point[1]));
+			SERVICE.execute(new quicksort(arr, point[0], point[1]));
 		}
-		service.shutdown();
+		SERVICE.shutdown();
 	} 
 
 	public void sort(int []arr, int low, int high) {
 		createThreads(arr);
 		try{
-			service.awaitTermination(1, TimeUnit.MINUTES);
+			SERVICE.awaitTermination(1, TimeUnit.MINUTES);
 		} catch(InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -60,6 +60,7 @@ public class Executor {
 	}
 
 	private static long test(int arrLength) {
+		SERVICE = Executors.newFixedThreadPool(THREADCOUNT);
 		int[] arr = new int[arrLength];
         for(int i = 0; i < arrLength; i++)
             arr[i] = ThreadLocalRandom.current().nextInt(1001);
@@ -77,6 +78,8 @@ public class Executor {
 			arrLength = Integer.parseInt(args[0]);
 		if(args.length > 1)
 			runs = Integer.parseInt(args[1]);
+		if(args.length > 2)
+			THREADCOUNT = Integer.parseInt(args[2]);
 		for(int i = 0; i < runs; i++) 
 			duration += test(arrLength);
 		duration /= runs;
