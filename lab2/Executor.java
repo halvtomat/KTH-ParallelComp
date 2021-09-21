@@ -1,5 +1,7 @@
 package lab2;
 
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadLocalRandom;
@@ -8,18 +10,32 @@ import java.util.concurrent.TimeUnit;
 public class Executor {
 
 	private static final int threadCount = Runtime.getRuntime().availableProcessors();
-	private static final ExecutorService service = Executors.newFixedThreadPool(threadCount);
+	private final ExecutorService service = Executors.newFixedThreadPool(threadCount);
 
-	private void createThreads() {} 
-	//skapa threadCount threads med lika fördelning
-	//kanske ha en counter för hur många delar och fortsätt breadth first 
-	//tills det är threadCount stycken sen kör execute på dem
-	//typ som breadth first search med en queue och sådär
+	private void createThreads(int []arr) {
+		Queue<int []> sortQueue = new LinkedList<>();
+		int []initialPoint = {0, arr.length - 1};
+		sortQueue.add(initialPoint);
+
+		while(sortQueue.size() < threadCount) {
+			int []point = sortQueue.remove();
+			if(point[1] < point[0])
+				continue;
+			int mid = Common.partition(arr, point[0], point[1]);
+			int []newPoint1 = {point[0], mid - 1};
+			int []newPoint2 = {mid + 1, point[1]};
+			sortQueue.add(newPoint1);
+			sortQueue.add(newPoint2);
+		}
+		for(int i = 0; i < threadCount; i++) {
+			int []point = sortQueue.remove();
+			service.execute(new quicksort(arr, point[0], point[1]));
+		}
+		service.shutdown();
+	} 
 
 	public void sort(int []arr, int low, int high) {
-
-		service.execute(new quicksort(arr, low, high));
-		service.shutdown();
+		createThreads(arr);
 		try{
 			service.awaitTermination(1, TimeUnit.MINUTES);
 		} catch(InterruptedException e) {
