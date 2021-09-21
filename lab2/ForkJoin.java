@@ -60,6 +60,9 @@ public class ForkJoin {
 		for(int i = 0; i < runs; i++) 
 			duration += test(arrLength);
 		duration /= runs;
-		System.out.println("average execution time: " + duration/1000000 + " ms");
+		if(args.length > 3)
+			System.out.println(duration/1000000);
+		else
+			System.out.println("average execution time: " + duration/1000000 + " ms");
     }
 }
