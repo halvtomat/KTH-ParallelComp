@@ -1,0 +1,5 @@
+NumThreads,Sequential,Executor,ForkJoin,Lambda,
+4,227,245,78,184,
+8,216,192,48,152,
+12,225,166,41,147,
+16,227,165,36,142,
