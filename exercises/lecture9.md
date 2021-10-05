@@ -55,4 +55,4 @@ If bottom were not declared as volatile a possibility exists where two threads w
 ### 2
 We want to reset the bottom field to zero as early as possible to avoid costly *compareAndSwap* calls.
 The earliest the reset can be done safely should be as soon as we have read the bottom and top values.
-There is nothing stopping the queue from trying to fill beyond the capacity of the queue. that would overflow the queue.
+There is nothing stopping the queue from trying to fill beyond the capacity of the queue. That would overflow the queue.
