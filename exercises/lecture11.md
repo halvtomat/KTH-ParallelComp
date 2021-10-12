@@ -14,7 +14,6 @@ I think that the algorithm would still work most of the times but in situations 
 the test might give some false negatives and classify trustworthy nodes as faulty ones.
 
 ## Exercise 3
-
 ### 1
 Yes leader election is possible. If a process with *id = 0* exists, that process sends *not leader* messages to all other processes and
 is elected leader. If there isn't a process with *id = 0*, go to the next phase where instead the process with *id = 1* becomes leader
